@@ -1,6 +1,9 @@
+'use client'
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { datadogRum } from '@datadog/browser-rum';
+import { useEffect } from 'react';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,6 +25,26 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  useEffect(() => {
+    datadogRum.init({
+      applicationId: '0d6e2991-9689-4d79-b23a-2e0f0d85a6da',
+      clientToken: 'pub35dc8f52d4c2c27998214abe0f427eca',
+      site: 'datadoghq.com',
+      service: 'devcoursehub',
+      env: process.env.NODE_ENV,
+      version: '1.0.0',
+      sessionSampleRate: 100,
+      sessionReplaySampleRate: 20,
+      trackUserInteractions: true,
+      trackResources: true,
+      trackLongTasks: true,
+      defaultPrivacyLevel: 'mask-user-input'
+    })
+    
+    datadogRum.startSessionReplayRecording()
+  }, [])
+
   return (
     <html lang="en">
       <body
